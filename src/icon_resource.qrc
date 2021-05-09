@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/bird.png</file>
+        <file>icons/bunny.png</file>
+        <file>icons/camel.png</file>
+        <file>icons/card_back.png</file>
+        <file>icons/cat.png</file>
+        <file>icons/chicken.png</file>
+        <file>icons/cow.png</file>
+        <file>icons/dog.png</file>
+        <file>icons/donkey.png</file>
+        <file>icons/duck.png</file>
+        <file>icons/elephant.png</file>
+        <file>icons/flamingo.png</file>
+        <file>icons/horse.png</file>
+        <file>icons/lizard.png</file>
+        <file>icons/llama.png</file>
+        <file>icons/monke.png</file>
+        <file>icons/panda.png</file>
+        <file>icons/pig.png</file>
+        <file>icons/rooster.png</file>
+        <file>icons/sheep.png</file>
+        <file>icons/squirrel.png</file>
+    </qresource>
+</RCC>
