@@ -21,12 +21,20 @@ const QString STYLE_SHEET_DEFAULT = ""
     "    background: rgba(0, 247, 255, 80)"
     "}";
 
+const QString STYLE_SHEET_TURNED = ""
+    "QPushButton {"
+    "    background-color: rgba(0, 255, 0, 30);"
+    "    border: 1px solid green;"
+    "    border-radius: 10px;"
+    "}";
+
 class CardButton : public QPushButton
 {
     Q_OBJECT
 
 public:
-    explicit CardButton(int value, QWidget* parent = Q_NULLPTR);
+    explicit CardButton(int icon, QWidget* parent = Q_NULLPTR);
+    void turn();
 
 signals:
     void cardbutton_clicked(int);
@@ -36,7 +44,7 @@ private slots:
 
 private:
     int icon_;
-    
+    bool turned_{};
 };
 
 #endif // CARDBUTTON_HH

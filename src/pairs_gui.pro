@@ -19,12 +19,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
 	cardbutton.cpp \
-	utils.cpp
+	utils.cpp \
+	game_logic.cpp
 
 HEADERS += \
     mainwindow.hh \
 	cardbutton.hh \
-	utils.hh
+	utils.hh \
+	game_logic.hh
 	
 RESOURCES += \
 	icon_resource.qrc

@@ -2,6 +2,8 @@
 #define UTILS_HH
 
 #include <qicon.h>
+#include <vector>
+#include <algorithm>
 
 namespace utils
 {
@@ -25,11 +27,15 @@ namespace utils
     bool calculate_factors(int value, unsigned& smaller_factor, 
         unsigned& larger_factor);
 
+    std::vector<int> get_random_card_icons(int card_count);
+
     const QString ICON_SUFFIX = ":/icons/";
     const QString ICON_FILE_TYPE = ".png";
     const int MAX_CARD_COUNT = 30;
+    const int ANIMAL_ICON_COUNT = 20;
 
     //enum to easily to refer to different icons
+    //first element has to be none, and second has to be the cards' backside
     enum icons
     {
         none,
