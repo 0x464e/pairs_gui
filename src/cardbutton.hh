@@ -8,6 +8,9 @@
 const int ICON_WIDTH = 100;
 const int ICON_HEIGHT = 100;
 
+const int CARDBUTTON_WIDTH = 110;
+const int CARDBUTTON_HEIGHT = 110;
+
 const QString STYLE_SHEET_DEFAULT = ""
     "QPushButton {"
     "    background-color: transparent;"

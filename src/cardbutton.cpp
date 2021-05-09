@@ -8,12 +8,10 @@ CardButton::CardButton(const int icon, QWidget* parent)
     this->setIcon(get_icon(utils::back));
     this->setIconSize(QSize(ICON_WIDTH, ICON_HEIGHT));
     this->setCursor(Qt::PointingHandCursor);
+    this->setFixedSize(CARDBUTTON_WIDTH, CARDBUTTON_HEIGHT);
     auto size_policy = this->sizePolicy();
     size_policy.setRetainSizeWhenHidden(true);
     this->setSizePolicy(size_policy);
-
-    auto asdasd = turned_;
-    auto asd = " ";
 }
 
 void CardButton::turn()

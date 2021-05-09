@@ -21,5 +21,6 @@
         <file>icons/rooster.png</file>
         <file>icons/sheep.png</file>
         <file>icons/squirrel.png</file>
+        <file>icons/app_icon.ico</file>
     </qresource>
 </RCC>
