@@ -4,7 +4,8 @@
 GameLogic::GameLogic(std::vector<Player*> players, QWidget* parent)
     : QObject(parent), players_(std::move(players)), player_in_turn_(nullptr),
       turn_number_(0), player_count_(players_.size()),
-      turned_card_icon_(utils::none), turned_card_(nullptr)
+      turned_card_icon_(utils::none), turned_card_(nullptr),
+      game_over_(false)
 {
     //no need to pass in the same thing multiple times, this cast is
     //guaranteed to be safe when this object is MainWindow's child
@@ -28,9 +29,10 @@ void GameLogic::start_game()
     std::shuffle(players_.begin(), players_.end(), 
         std::mt19937(std::random_device()()));
     set_next_player();
-    const auto name = player_in_turn_->get_name();
-    mainwindow_->set_player_in_turn(name);
-    mainwindow_->append_to_text_browser(name + " starts the game!");
+    mainwindow_->append_to_text_browser("Welcome to Animals Memory Game!\n"
+                                        + player_in_turn_->get_name() 
+                                        + " starts the game.\n"
+                                        "---");
 }
 
 void GameLogic::handle_cardbutton_click(const int icon)
@@ -38,38 +40,62 @@ void GameLogic::handle_cardbutton_click(const int icon)
     //safe cast, this signal is only received from a CardButton
     const auto button = qobject_cast<CardButton*>(sender());
 
+    turn_card(button, icon);
+}
+
+void GameLogic::turn_card(CardButton* button, const int icon)
+{
     //if there is currently a card turned
-    if(turned_card_)
+    if (turned_card_)
     {
-        if(turned_card_icon_ == icon)
+        print_log(icon);
+        //if the turned card's icon is the same as 
+        //the card that's about to be turned
+        if (turned_card_icon_ == icon)
         {
             player_in_turn_->add_pair();
             button->turn();
 
+            //invoke a lambda after PAIR_VIEW_TIME ms has passed
+            //gives the players PAIR_VIEW_TIME amount of time to 
+            //see the turned card pair
             QTimer::singleShot(PAIR_VIEW_TIME, [this, button]
             {
                 turned_card_->hide();
                 button->hide();
                 turned_card_ = nullptr;
                 mainwindow_->restore_all_cards();
+                check_game_over();
+                if(!game_over_)
+                {
+                    mainwindow_->append_to_text_browser(
+                        player_in_turn_->get_name() + " continues their turn...");
+                }
             });
         }
+        //if the turned card pair wasn't a matching pair
         else
         {
             button->turn();
-            turned_card_->set_turned_no_pair();
-            button->set_turned_no_pair();
+            turned_card_->set_turned_no_pair_state();
+            button->set_turned_no_pair_state();
+
             QTimer::singleShot(PAIR_VIEW_TIME, [this]
             {
                 mainwindow_->restore_all_cards();
                 turned_card_ = nullptr;
+                set_next_player();
+                check_game_over();
             });
         }
+        //disables all cards for PAIR_VIEW_TIME ms
+        //note that this runs before restore_all_cards() does in the lambda
         mainwindow_->disable_all_cards();
         turned_card_icon_ = utils::none;
     }
     else
     {
+        //if this is the first card being turned, nothing special needs doing
         button->turn();
         turned_card_icon_ = icon;
         turned_card_ = button;
@@ -78,7 +104,53 @@ void GameLogic::handle_cardbutton_click(const int icon)
 
 void GameLogic::set_next_player()
 {
+    if (game_over_) 
+    {
+        return;
+    }
     //once each player has had their turn, get back to the first player
     //with modulo player count
     player_in_turn_ = players_.at(turn_number_++ % player_count_);
+
+    //update player label
+    const auto name = player_in_turn_->get_name();
+    mainwindow_->set_player_in_turn(name);
+
+    //on the very first turn, just the welcome message suffices
+    if (turn_number_ != 1)
+    {
+        mainwindow_->append_to_text_browser(name + " takes the turn...");
+    }
+}
+
+void GameLogic::print_log(const int icon) const
+{
+    const auto name = player_in_turn_->get_name();
+
+    //add one because the change in pair count 
+    //hasn't effect yet when this runs
+    const auto pairs = player_in_turn_->get_pairs() + 1;
+
+    //ternarys are beatiful, you're wrong if you think otherwise :p
+    mainwindow_->append_to_text_browser(name + " turns their second card...\n" 
+        //check if it's a pair
+        + (turned_card_icon_ == icon ?
+                utils::icon_name_to_plural(icon) + "!\n" + name + " has now " 
+                + QString::number(pairs) + " pair" + (pairs > 1 ? "s" : "") + "."
+            : 
+                "No pair!\n---"));
+}
+
+void GameLogic::check_game_over()
+{
+    const auto game_over = mainwindow_->all_buttons_hidden();
+    if (game_over)
+    {
+        end_game();
+    }
+}
+
+void GameLogic::end_game()
+{
+    game_over_ = true;
 }

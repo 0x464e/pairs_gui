@@ -43,6 +43,8 @@ namespace utils
      */
     QString seconds_to_time_string(unsigned seconds);
 
+    QString icon_name_to_plural(int icon);
+
     const QString ICON_SUFFIX = ":/icons/";
     const QString ICON_FILE_TYPE = ".png";
     const int MAX_CARD_COUNT = 30;

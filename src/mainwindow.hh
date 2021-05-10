@@ -25,6 +25,8 @@ public:
     void append_to_text_browser(const QString& text) const;
     void disable_all_cards() const;
     void restore_all_cards() const;
+    bool all_buttons_hidden() const;
+    void stop_timer();
 
 private slots:
     void timer_callback();

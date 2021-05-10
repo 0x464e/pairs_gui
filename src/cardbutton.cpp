@@ -49,7 +49,7 @@ void CardButton::set_enabled()
     this->blockSignals(false);
 }
 
-void CardButton::set_turned_no_pair()
+void CardButton::set_turned_no_pair_state()
 {
     set_style_state(TURNED_NO_PAIR_STATE);
 }

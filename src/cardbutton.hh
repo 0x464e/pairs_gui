@@ -68,7 +68,7 @@ public:
     void turn();
     void set_disabled(bool change_style_state = true);
     void set_enabled();
-    void set_turned_no_pair();
+    void set_turned_no_pair_state();
     bool get_turned_state() const;
 
 signals:

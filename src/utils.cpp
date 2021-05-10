@@ -58,10 +58,59 @@ std::vector<int> utils::get_random_card_icons(const int card_count)
 
 QString utils::seconds_to_time_string(const unsigned seconds)
 {
+    //if time is over 999 mins 59 secs, just return 999:99 
+    if(seconds >= 60000)
+    {
+        return "999:99";
+    }
+
     const auto mins = QString::number(seconds / 60);
     const auto secs = QString::number(seconds % 60);
 
     //add a zero if minute or second is a 1 digit number
     return QString((mins.length() == 1 ? "0" + mins : mins) + ":" 
         + (secs.length() == 1 ? "0" + secs : secs));
+}
+
+QString utils::icon_name_to_plural(const int icon)
+{
+    QString name = "";
+
+    switch(icon)
+    {
+    case bird:
+    case camel:
+    case cat:
+    case chicken:
+    case cow:
+    case dog:
+    case donkey:
+    case duck:
+    case elephant:
+    case flamingo:
+    case horse:
+    case lizard:
+    case llama:
+    case panda:
+    case pig:
+    case rooster:
+    case squirrel:
+        //convert the first charater to upper case
+        //check for empty just so [0] access is safe, even though
+        //it shouldn't be possible to be empty
+        name = file_names.at(icon);
+        if(!name.isEmpty())
+        {
+            name[0] = name[0].toUpper();
+        }
+        return name + "s";
+    case bunny:
+        return "Bunnies";
+    case monke:
+        return "Monke";
+    case sheep:
+        return "Sheep";
+    default:
+        return "";
+    }
 }

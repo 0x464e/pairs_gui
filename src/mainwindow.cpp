@@ -162,10 +162,36 @@ void MainWindow::restore_all_cards() const
     }
 }
 
+void MainWindow::stop_timer()
+{
+    timer_.stop();
+}
+
+bool MainWindow::all_buttons_hidden() const
+{
+    //go through each card button
+    //if even one is visible, return false
+    for(const auto button : cardbuttons_)
+    {
+        if (button->isVisible())
+        {
+            return false;
+        }
+    }
+
+    //if execution got this far, all buttons are hidden
+    return true;
+}
+
 MainWindow::~MainWindow()
 = default;
 
 void MainWindow::timer_callback()
 {
+    //add another digit if time goes over 99 mins 59 secs
+    if(timer_secs_ == 6000)
+    {
+        lcd_number_->setDigitCount(6);
+    }
     lcd_number_->display(utils::seconds_to_time_string(timer_secs_++));
 }

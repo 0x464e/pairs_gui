@@ -50,11 +50,18 @@ private:
     int turned_card_icon_;
     //CardButton pointer for which card is turned right now
     CardButton* turned_card_;
-    CardButton* other_button_;
-    int value1_ = 1;
+    bool game_over_;
+
+    void turn_card(CardButton* button, int icon);
 
     //Sets the next player's turn.
     void set_next_player();
+
+    void print_log(int icon) const;
+
+    void check_game_over();
+
+    void end_game();
 };
 
 #endif // GAME_LOGIC_HH
