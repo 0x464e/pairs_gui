@@ -1,27 +1,20 @@
 #include "mainwindow.hh"
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent), timer_(this), timer_secs_(1)
+MainWindow::MainWindow(const unsigned card_count,
+                       const std::vector<Player*>& players, QWidget* parent) :
+    QMainWindow(parent), card_count_(card_count), timer_(this)
 {
     //card row and column count, will be set byref by utils::calculate_factors
     auto card_rows = 1u;
     auto card_columns = 1u;
 
+
     //attempt to calculate factors for the specified card count
-    successful_init_ = utils::calculate_factors(CARD_COUNT, card_rows,
-                                                card_columns);
+    utils::calculate_factors(card_count_, card_rows, card_columns);
 
     //three players hardcoded, but everything is designed so that any amount
     //of players will work. player selection can easily be added later
-    game_logic_ = new GameLogic({ new Player(PLAYER1_NAME),
-                                  new Player(PLAYER2_NAME), 
-                                  new Player(PLAYER3_NAME) }, this);
-
-    //if an invalid card count was specified, no need to continue further
-    if (!successful_init_)
-    {
-        return;
-    }
+    game_logic_ = new GameLogic(players, this);
 
     this->setWindowIcon(QIcon(":/icons/app_icon.ico"));
     this->setWindowTitle("Animals Memory Game");
@@ -30,8 +23,10 @@ MainWindow::MainWindow(QWidget* parent)
     init_cardbuttons(card_rows, card_columns);
     init_widget_sizes(card_rows, card_columns);
 
+    //count game time in one second (1000 ms) intervals
     timer_.start(1000);
     connect(&timer_, &QTimer::timeout, this, &MainWindow::timer_callback);
+
     game_logic_->start_game();
 }
 
@@ -55,7 +50,7 @@ void MainWindow::init_cardbuttons(const unsigned card_rows,
                                   const unsigned card_columns)
 {
     //gets the correct amount of randomized card icons
-    const auto icons = utils::get_random_card_icons(CARD_COUNT);
+    const auto icons = utils::get_random_card_icons(card_count_);
 
     //index to get icons from the above icon vector
     auto i = 0;
@@ -113,11 +108,6 @@ void MainWindow::init_widget_sizes(const unsigned card_rows,
     }
 
     this->setFixedSize(width, height);
-}
-
-bool MainWindow::init_failed() const
-{
-    return !successful_init_;
 }
 
 void MainWindow::set_player_in_turn(const QString& player) const
@@ -185,6 +175,8 @@ void MainWindow::end_game()
 {
     //stop game time timer
     timer_.stop();
+    //subtract one second to realign the timer's on screen number and 
+    //timer_secs_--;
     //print game duration
     append_to_text_browser(
         "Game duration: " + QString::number(timer_secs_ / 60) + " minutes and "
@@ -206,5 +198,5 @@ void MainWindow::timer_callback()
         lcd_number_->setDigitCount(6);
     }
     //convert seconds to a min:sec formatted string and set it 
-    lcd_number_->display(utils::seconds_to_time_string(timer_secs_++));
+    lcd_number_->display(utils::seconds_to_time_string(++timer_secs_));
 }

@@ -28,17 +28,12 @@ public:
     /**
      * Constructor, initializes the creation of the main GUI window.
      *
+     * \param card_count UInt amount of cards to use in the game
+     * \param players vector of player object pointers, the players in this game
      * \param parent QWidget* parent for this object
      * \return MainWindow object
      */
-    explicit MainWindow(QWidget *parent = nullptr);
-
-    /**
-     * Method to retrieve the initialization success state.
-     * 
-     * \return bool true for a failed initialization
-     */
-    bool init_failed() const;
+    explicit MainWindow(unsigned card_count, const std::vector<Player*>& players, QWidget* parent = nullptr);
 
     /**
      * Sets the player in turn for the QLabel ui component.
@@ -68,17 +63,13 @@ private slots:
     void timer_callback();
 
 private:
-    //amount of cards in the playing field
-    //must be an even number between 2 and 40
-    const int CARD_COUNT = 40;
     //spacing amount between ui components
     const int GRID_SPACING = 6;
 
     const int TEXT_BROWSER_HEIGHT = 210;
     const QString PLAYER_IN_TURN = "Player in turn:\n";
-    const QString PLAYER1_NAME = "Make";
-    const QString PLAYER2_NAME = "Jorma";
-    const QString PLAYER3_NAME = "Viliami";
+
+    unsigned card_count_;
 
     //vector to contain pointers for each cardbutton
     std::vector<CardButton*> cardbuttons_{};
@@ -96,10 +87,8 @@ private:
     //pointer to the game logic object, gets created in this class's constructor
     GameLogic* game_logic_{};
 
-    //whether or not this class was initialized successfully
-    bool successful_init_{};
     //amount of seconds passed in this game
-    int timer_secs_;
+    int timer_secs_{};
 
     //initializes most of the widgets
     void init_widgets();

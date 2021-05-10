@@ -8,15 +8,9 @@ QIcon utils::get_icon(const int icon)
     return QIcon(ICON_SUFFIX + icon_names.at(icon) + ICON_FILE_TYPE);
 }
 
-bool utils::calculate_factors(const int value, unsigned& smaller_factor, 
-    unsigned& larger_factor)
+void utils::calculate_factors(const int value, unsigned& smaller_factor,
+                              unsigned& larger_factor)
 {
-    //Card number has to be even and between [2, MAX_CARD_COUNT]
-    if (value < 2 || value > MAX_CARD_COUNT || value % 2)
-    {
-        return false;
-    }
-
     for (auto i = 1; i * i <= value; ++i)
     {
         if (value % i == 0)
@@ -25,7 +19,6 @@ bool utils::calculate_factors(const int value, unsigned& smaller_factor,
         }
     }
     larger_factor = value / smaller_factor;
-    return true;
 }
 
 std::vector<int> utils::get_random_card_icons(const int card_count)
@@ -140,4 +133,49 @@ QString utils::player_vector_to_names(const std::vector<Player*>& players)
     }
 
     return name_string;
+}
+
+
+std::vector<QString> utils::split(const QString& text, const char separator,
+                               const bool include_empty)
+{
+    if (text.isEmpty())
+    {
+        return std::vector<QString> {""};
+    }
+
+    //vector to hold the separated parts
+    std::vector<QString> parts{};
+    //temp variable to hold the current part
+    QString part = "";
+
+    //loop through each character looking for occurrences of
+    //the separator character
+    for (const auto c : text)
+    {
+        //ignore carriage returns
+        if (c == '\r')
+        {
+            continue;
+        }
+
+        if (c == separator)
+        {
+            //include empty parts only if asked for
+            if (!part.isEmpty() || include_empty)
+            {
+                parts.push_back(part);
+            }
+            part = "";
+            continue;
+        }
+        part += c;
+    }
+
+    //also add in whatever was after the last separator
+    if (!part.isEmpty() || include_empty)
+    {
+        parts.push_back(part);
+    }
+    return parts;
 }

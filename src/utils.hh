@@ -9,7 +9,7 @@
 #define UTILS_HH
 
 #include <player.hh>
-#include <qicon.h>
+#include <QIcon>
 #include <vector>
 #include <algorithm>
 
@@ -32,8 +32,8 @@ namespace utils
      * \param larger_factor UInt byref specified for the larger factor
      * \return bool true for success, false for failure
      */
-    bool calculate_factors(int value, unsigned& smaller_factor, 
-        unsigned& larger_factor);
+    void calculate_factors(int value, unsigned& smaller_factor,
+                           unsigned& larger_factor);
 
     /**
      * Gets the specified amount of random card icon pairs.
@@ -67,6 +67,17 @@ namespace utils
      * \return QString of comma separated player names
      */
     QString player_vector_to_names(const std::vector<Player*>& players);
+
+    /**
+     * \brief Splits input by the specified delimiter.
+     * 
+     * \param text String to split
+     * \param separator char separator character
+     * \param include_empty bool include empty parts, default false (= no)
+     * \return String vector of the split parts
+     */
+    std::vector<QString> split(const QString& text, char separator,
+                                   bool include_empty = false);
 
     const QString ICON_SUFFIX = ":/icons/";
     const QString ICON_FILE_TYPE = ".png";
