@@ -11,7 +11,7 @@ QIcon utils::get_icon(const int icon)
 bool utils::calculate_factors(const int value, unsigned& smaller_factor, 
     unsigned& larger_factor)
 {
-    //Card number has to be even and between [2, 30]
+    //Card number has to be even and between [2, MAX_CARD_COUNT]
     if(value < 2 || value > MAX_CARD_COUNT || value % 2 != 0)
     {
         return false;
@@ -36,7 +36,7 @@ std::vector<int> utils::get_random_card_icons(const int card_count)
     auto i = 1;
     std::generate(icons.begin(), icons.end(), [&] { return ++i; });
 
-    //shuffle elements with a mersenne twister engine seeded with 
+    //random shuffle elements with a mersenne twister engine seeded with 
     //a true random number number from std::random_device (if supported)
     std::shuffle(icons.begin(), icons.end(), std::mt19937(69));
     //std::shuffle(icons.begin(), icons.end(), std::mt19937(std::random_device()()));
@@ -54,4 +54,14 @@ std::vector<int> utils::get_random_card_icons(const int card_count)
     //std::shuffle(icons.begin(), icons.end(), std::mt19937(std::random_device()()));
 
     return icons;
+}
+
+QString utils::seconds_to_time_string(const unsigned seconds)
+{
+    const auto mins = QString::number(seconds / 60);
+    const auto secs = QString::number(seconds % 60);
+
+    //add a zero if minute or second is a 1 digit number
+    return QString((mins.length() == 1 ? "0" + mins : mins) + ":" 
+        + (secs.length() == 1 ? "0" + secs : secs));
 }
