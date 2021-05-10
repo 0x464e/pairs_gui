@@ -16,7 +16,7 @@ void Player::add_pair()
     pairs_++;
 }
 
-int Player::get_pairs() const
+unsigned Player::get_pairs() const
 {
     return pairs_;
 }

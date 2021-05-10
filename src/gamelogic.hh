@@ -34,7 +34,7 @@ public slots:
 
 private:
     //how long card pair is visible for after being turned (in ms)
-    const int PAIR_VIEW_TIME = 3000;
+    const unsigned PAIR_VIEW_TIME = 500;
 
     //players in the game
     std::vector<Player*> players_;
@@ -62,6 +62,24 @@ private:
     void check_game_over();
 
     void end_game();
+
+    /**
+     * Handles cards being hidden, or turned back after the specified viewing
+     * time of cards has passed.
+     *
+     * \param button CardButton pointer, default to nullptr.\n
+     * If specified, this method is handling a matching pair being turned.
+     */
+    void delayed_card_handling(CardButton* button = nullptr);
+
+    /**
+     * Gets the winner of the game, or if it was a tie between one or more players,
+     * all the tied players are returned.\n
+     * The returned vector will only contain one player if there was no tie.
+     *
+     * \return vector of Player object pointers
+     */
+    std::vector<Player*> get_winner_or_tied_players();
 };
 
 #endif // GAME_LOGIC_HH

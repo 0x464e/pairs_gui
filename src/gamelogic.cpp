@@ -61,16 +61,7 @@ void GameLogic::turn_card(CardButton* button, const int icon)
             //see the turned card pair
             QTimer::singleShot(PAIR_VIEW_TIME, [this, button]
             {
-                turned_card_->hide();
-                button->hide();
-                turned_card_ = nullptr;
-                mainwindow_->restore_all_cards();
-                check_game_over();
-                if(!game_over_)
-                {
-                    mainwindow_->append_to_text_browser(
-                        player_in_turn_->get_name() + " continues their turn...");
-                }
+                delayed_card_handling(button);
             });
         }
         //if the turned card pair wasn't a matching pair
@@ -82,10 +73,7 @@ void GameLogic::turn_card(CardButton* button, const int icon)
 
             QTimer::singleShot(PAIR_VIEW_TIME, [this]
             {
-                mainwindow_->restore_all_cards();
-                turned_card_ = nullptr;
-                set_next_player();
-                check_game_over();
+                delayed_card_handling();
             });
         }
         //disables all cards for PAIR_VIEW_TIME ms
@@ -99,6 +87,35 @@ void GameLogic::turn_card(CardButton* button, const int icon)
         button->turn();
         turned_card_icon_ = icon;
         turned_card_ = button;
+    }
+}
+
+void GameLogic::delayed_card_handling(CardButton* button)
+{
+    //if the button parameter was specified, this method is handling
+    //a matching pair being turned
+    if (button)
+    {
+        //hide the matching pair
+        turned_card_->hide();
+        button->hide();
+    }
+    else
+    {
+        //change turns if there was no matching pair
+        set_next_player();
+    }
+    
+    mainwindow_->restore_all_cards();
+    turned_card_ = nullptr;
+    check_game_over();
+
+    //turn continuation message should only be appended if the game didn't end
+    //and this method is handling a matching pair being turned
+    if (!game_over_ && button)
+    {
+        mainwindow_->append_to_text_browser(
+            player_in_turn_->get_name() + " continues their turn...");
     }
 }
 
@@ -135,7 +152,7 @@ void GameLogic::print_log(const int icon) const
     mainwindow_->append_to_text_browser(name + " turns their second card...\n" 
         //check if it's a pair
         + (turned_card_icon_ == icon ?
-                utils::icon_name_to_plural(icon) + "!\n" + name + " has now " 
+                utils::icon_name_to_plural(icon) + "!\n" + name + " now has " 
                 + QString::number(pairs) + " pair" + (pairs > 1 ? "s" : "") + "."
             : 
                 "No pair!\n---"));
@@ -153,4 +170,61 @@ void GameLogic::check_game_over()
 void GameLogic::end_game()
 {
     game_over_ = true;
+    const auto winner_or_tied_players = get_winner_or_tied_players();
+    const auto tie = winner_or_tied_players.size() > 1;
+
+    //amount of pairs the winner (or tied players) have
+    //safe access because there will always be at least one winner
+    const auto pairs = winner_or_tied_players.at(0)->get_pairs();
+
+    mainwindow_->append_to_text_browser("---\nGame Over!");
+
+    if (tie)
+    {
+        const auto names = utils::player_vector_to_names(winner_or_tied_players);
+        mainwindow_->append_to_text_browser(
+            "It's a tie between " + names + " with " + QString::number(pairs) +
+            " pair" + (pairs > 1 ? "s" : "") + "!");
+    }
+    else
+    {
+        mainwindow_->append_to_text_browser(
+            winner_or_tied_players.at(0)->get_name() + " wins with " 
+            + QString::number(pairs) + " pair" + (pairs > 1 ? "s" : "") + "!");
+    }
+
+    mainwindow_->end_game();
+}
+
+std::vector<Player*> GameLogic::get_winner_or_tied_players()
+{
+    //sort by descending using a custom comparator lambda
+    std::sort(players_.begin(), players_.end(),
+              [](const auto& player1, const auto& player2)
+              {
+                  return player1->get_pairs() > player2->get_pairs();
+              });
+
+    std::vector<Player*> winner_or_tied_players = {};
+
+    auto previous_score = 0u;
+
+    for (const auto& player : players_)
+    {
+        const auto score = player->get_pairs();
+
+        //scores are sorted by descending, so once the current score
+        //is smaller than the previous score, we're done
+        if (score >= previous_score)
+        {
+            previous_score = score;
+            winner_or_tied_players.push_back(player);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return winner_or_tied_players;
 }

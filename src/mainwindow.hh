@@ -26,19 +26,20 @@ public:
     void disable_all_cards() const;
     void restore_all_cards() const;
     bool all_buttons_hidden() const;
-    void stop_timer();
+    void end_game();
 
 private slots:
     void timer_callback();
 
 private:
-    //max 30
-    const int CARD_COUNT = 30;
+    //max 40
+    const int CARD_COUNT = 8;
     const int GRID_SPACING = 6;
     const int TEXT_BROWSER_HEIGHT = 210;
     const QString PLAYER_IN_TURN = "Player in turn:\n";
     const QString PLAYER1_NAME = "Make";
     const QString PLAYER2_NAME = "Jorma";
+    const QString PLAYER3_NAME = "Viliami";
 
     std::vector<CardButton*> cardbuttons_{};
 

@@ -26,7 +26,7 @@ public:
      *
      * \return int number of pairs
      */
-    int get_pairs() const;
+    unsigned get_pairs() const;
 
 private:
     QString name_;

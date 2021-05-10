@@ -5,7 +5,7 @@ QIcon utils::get_icon(const int icon)
 {
     //The requested icon is guaranteed to be found when this function is
     //only passed arguments via the icons enum.
-    return QIcon(ICON_SUFFIX + file_names.at(icon) + ICON_FILE_TYPE);
+    return QIcon(ICON_SUFFIX + icon_names.at(icon) + ICON_FILE_TYPE);
 }
 
 bool utils::calculate_factors(const int value, unsigned& smaller_factor, 
@@ -98,7 +98,7 @@ QString utils::icon_name_to_plural(const int icon)
         //convert the first charater to upper case
         //check for empty just so [0] access is safe, even though
         //it shouldn't be possible to be empty
-        name = file_names.at(icon);
+        name = icon_names.at(icon);
         if(!name.isEmpty())
         {
             name[0] = name[0].toUpper();
@@ -113,4 +113,26 @@ QString utils::icon_name_to_plural(const int icon)
     default:
         return "";
     }
+}
+
+QString utils::player_vector_to_names(const std::vector<Player*>& players)
+{
+    const auto size = players.size();
+    QString name_string = "";
+
+    //size is one-based
+    auto i = 1u;
+
+    for(const auto player : players)
+    {
+        name_string += player->get_name();
+        //if not the last element
+        if(i != size)
+        {
+            //ternary if next element is the last element
+            name_string += ++i == size ? " and " : ", ";
+        } 
+    }
+
+    return name_string;
 }

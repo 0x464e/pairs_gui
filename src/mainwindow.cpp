@@ -11,10 +11,11 @@ MainWindow::MainWindow(QWidget* parent)
     successful_init_ = utils::calculate_factors(CARD_COUNT, card_rows,
                                                 card_columns);
 
-    //two players hardcoded, but everything is designed so that any amount
-    //of players would work. player selection can easily be added later
+    //three players hardcoded, but everything is designed so that any amount
+    //of players will work. player selection can easily be added later
     game_logic_ = new GameLogic({ new Player(PLAYER1_NAME),
-                                  new Player(PLAYER2_NAME) }, this);
+                                  new Player(PLAYER2_NAME), 
+                                  new Player(PLAYER3_NAME) }, this);
 
     //if an invalid card count was specified, no need to continue further
     if (!successful_init_)
@@ -162,11 +163,6 @@ void MainWindow::restore_all_cards() const
     }
 }
 
-void MainWindow::stop_timer()
-{
-    timer_.stop();
-}
-
 bool MainWindow::all_buttons_hidden() const
 {
     //go through each card button
@@ -181,6 +177,21 @@ bool MainWindow::all_buttons_hidden() const
 
     //if execution got this far, all buttons are hidden
     return true;
+}
+
+void MainWindow::end_game()
+{
+    timer_.stop();
+    append_to_text_browser(
+        "Game duration: " + QString::number(timer_secs_ / 60) + " minutes and "
+        + QString::number(timer_secs_ % 60) + " seconds.");
+    player_indicator_label_->setText("Game Over!");
+
+    //reveal all cards at the end
+    for(const auto& card : cardbuttons_)
+    {
+        card->show();
+    }
 }
 
 MainWindow::~MainWindow()
