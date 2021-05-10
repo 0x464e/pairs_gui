@@ -1,11 +1,9 @@
 #include "gamelogic.hh"
 #include "mainwindow.hh"
 
-GameLogic::GameLogic(std::vector<Player*> players, QWidget* parent)
-    : QObject(parent), players_(std::move(players)), player_in_turn_(nullptr),
-      turn_number_(0), player_count_(players_.size()),
-      turned_card_icon_(utils::none), turned_card_(nullptr),
-      game_over_(false)
+GameLogic::GameLogic(std::vector<Player*> players, QWidget* parent) :
+    QObject(parent), players_(std::move(players)),
+    player_count_(players_.size()), turned_card_icon_(utils::none)
 {
     //no need to pass in the same thing multiple times, this cast is
     //guaranteed to be safe when this object is MainWindow's child
@@ -15,7 +13,7 @@ GameLogic::GameLogic(std::vector<Player*> players, QWidget* parent)
 GameLogic::~GameLogic()
 {
     //deallocate each player object
-    for(const auto& player : players_)
+    for (const auto& player : players_)
     {
         delete player;
     }
@@ -24,7 +22,7 @@ GameLogic::~GameLogic()
 void GameLogic::start_game()
 {
     //get a random player playing order by random shuffling the elements with 
-    //a mersenne twister engine seeded with a true random number number from 
+    //a mersenne twister engine seeded with a true random number from 
     //std::random_device (if supported)
     std::shuffle(players_.begin(), players_.end(), 
         std::mt19937(std::random_device()()));
@@ -39,7 +37,6 @@ void GameLogic::handle_cardbutton_click(const int icon)
 {
     //safe cast, this signal is only received from a CardButton
     const auto button = qobject_cast<CardButton*>(sender());
-
     turn_card(button, icon);
 }
 
@@ -148,7 +145,7 @@ void GameLogic::print_log(const int icon) const
     //hasn't effect yet when this runs
     const auto pairs = player_in_turn_->get_pairs() + 1;
 
-    //ternarys are beatiful, you're wrong if you think otherwise :p
+    //ternarys are beautiful, you're wrong if you think otherwise :p
     mainwindow_->append_to_text_browser(name + " turns their second card...\n" 
         //check if it's a pair
         + (turned_card_icon_ == icon ?
@@ -179,8 +176,10 @@ void GameLogic::end_game()
 
     mainwindow_->append_to_text_browser("---\nGame Over!");
 
+
     if (tie)
     {
+        //print the tied players
         const auto names = utils::player_vector_to_names(winner_or_tied_players);
         mainwindow_->append_to_text_browser(
             "It's a tie between " + names + " with " + QString::number(pairs) +
@@ -188,6 +187,7 @@ void GameLogic::end_game()
     }
     else
     {
+        //print the winner
         mainwindow_->append_to_text_browser(
             winner_or_tied_players.at(0)->get_name() + " wins with " 
             + QString::number(pairs) + " pair" + (pairs > 1 ? "s" : "") + "!");
@@ -206,7 +206,6 @@ std::vector<Player*> GameLogic::get_winner_or_tied_players()
               });
 
     std::vector<Player*> winner_or_tied_players = {};
-
     auto previous_score = 0u;
 
     for (const auto& player : players_)

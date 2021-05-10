@@ -18,8 +18,9 @@ CardButton::CardButton(const int icon, QWidget* parent)
 
 void CardButton::turn()
 {
-    if(turned_)
+    if (turned_)
     {
+        //if card was already turned, it's being turned back
         this->setIcon(get_icon(utils::back));
         set_enabled();
     }
@@ -34,11 +35,13 @@ void CardButton::turn()
 
 void CardButton::set_disabled(const bool change_style_state)
 {
-    if(change_style_state)
+    //optionally don't set the style state
+    if (change_style_state)
     {
         this->set_style_state(DISABLED_STATE);
     }
     this->setCursor(Qt::ForbiddenCursor);
+    //block signals so further presses of the button don't do anything
     this->blockSignals(true);
 }
 
@@ -61,6 +64,7 @@ bool CardButton::get_turned_state() const
 
 void CardButton::handle_click()
 {
+    //emit custom signal with an argument
     emit cardbutton_clicked(icon_);
 }
 

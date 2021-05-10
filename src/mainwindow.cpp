@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget* parent)
     }
 
     this->setWindowIcon(QIcon(":/icons/app_icon.ico"));
+    this->setWindowTitle("Animals Memory Game");
 
     init_widgets();
     init_cardbuttons(card_rows, card_columns);
@@ -64,6 +65,7 @@ void MainWindow::init_cardbuttons(const unsigned card_rows,
     {
         for (auto col = 0u; col < card_columns; col++)
         {
+            //grabs an icon from the icon vector to initialize the button with
             const auto button = new CardButton(icons.at(i++), grid_layout_widget_);
             cardbuttons_.push_back(button);
             connect(button, &CardButton::cardbutton_clicked, game_logic_,
@@ -130,10 +132,10 @@ void MainWindow::append_to_text_browser(const QString& text) const
 
 void MainWindow::disable_all_cards() const
 {
-    for(const auto& card : cardbuttons_)
+    for (const auto& card : cardbuttons_)
     {
         //don't set disabled state for turned or already removed cards
-        if(!card->get_turned_state() && card->isVisible())
+        if (!card->get_turned_state() && card->isVisible())
         {
             card->set_disabled();
         }
@@ -145,14 +147,14 @@ void MainWindow::restore_all_cards() const
     for (const auto& card : cardbuttons_)
     {
         //don't restore already removed cards
-        if(!card->isVisible())
+        if (!card->isVisible())
         {
             continue;
         }
 
         //if the card is turned, turn it back
         //otherwise just enable it
-        if(card->get_turned_state())
+        if (card->get_turned_state())
         {
             card->turn();
         }
@@ -167,7 +169,7 @@ bool MainWindow::all_buttons_hidden() const
 {
     //go through each card button
     //if even one is visible, return false
-    for(const auto button : cardbuttons_)
+    for (const auto button : cardbuttons_)
     {
         if (button->isVisible())
         {
@@ -181,28 +183,28 @@ bool MainWindow::all_buttons_hidden() const
 
 void MainWindow::end_game()
 {
+    //stop game time timer
     timer_.stop();
+    //print game duration
     append_to_text_browser(
         "Game duration: " + QString::number(timer_secs_ / 60) + " minutes and "
         + QString::number(timer_secs_ % 60) + " seconds.");
     player_indicator_label_->setText("Game Over!");
 
     //reveal all cards at the end
-    for(const auto& card : cardbuttons_)
+    for (const auto& card : cardbuttons_)
     {
         card->show();
     }
 }
 
-MainWindow::~MainWindow()
-= default;
-
 void MainWindow::timer_callback()
 {
     //add another digit if time goes over 99 mins 59 secs
-    if(timer_secs_ == 6000)
+    if (timer_secs_ == 6000)
     {
         lcd_number_->setDigitCount(6);
     }
+    //convert seconds to a min:sec formatted string and set it 
     lcd_number_->display(utils::seconds_to_time_string(timer_secs_++));
 }

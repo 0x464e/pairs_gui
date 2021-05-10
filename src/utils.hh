@@ -1,3 +1,10 @@
+/* Module: Utils
+ * ----------
+ * COMP.CS.110 SPRING 2021
+ * ----------
+ * Module for different kinds of utilities needed in the program.
+ * */
+
 #ifndef UTILS_HH
 #define UTILS_HH
 
@@ -5,8 +12,6 @@
 #include <qicon.h>
 #include <vector>
 #include <algorithm>
-
-class Player;
 
 namespace utils
 {
@@ -22,7 +27,7 @@ namespace utils
      * Calculates factors for the desired value so that the factors
      * are as near to each other as possible.
      *
-     * \param value Int Input value to calulate factor of
+     * \param value Int Input value to calculate factor of
      * \param smaller_factor UInt byref specified for the smaller factor
      * \param larger_factor UInt byref specified for the larger factor
      * \return bool true for success, false for failure
@@ -55,7 +60,8 @@ namespace utils
     QString icon_name_to_plural(int icon);
 
     /**
-     * Converts a vector of player objects to a comma separeted string list.
+     * Converts a vector of player objects to a comma separeted string list.\n
+     * Output in "player1, player2 and player3" -format.
      *
      * \param players vector of player object pointers
      * \return QString of comma separated player names

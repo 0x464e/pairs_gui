@@ -1,3 +1,10 @@
+/* Class Player
+ * ----------
+ * COMP.CS.110 SPRING 2021
+ * ----------
+ * Models a player for the game.
+ * */
+
 #ifndef PLAYER_HH
 #define PLAYER_HH
 
@@ -30,7 +37,7 @@ public:
 
 private:
     QString name_;
-    int pairs_;
+    int pairs_{};
 };
 
 #endif // PLAYER_HH
