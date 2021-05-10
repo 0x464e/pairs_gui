@@ -6,8 +6,17 @@ Player::Player(QString name) :
 
 }
 
-
 QString Player::get_name() const
 {
     return name_;
+}
+
+void Player::add_pair()
+{
+    pairs_++;
+}
+
+int Player::get_pairs() const
+{
+    return pairs_;
 }

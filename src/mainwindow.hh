@@ -23,6 +23,8 @@ public:
     bool init_failed() const;
     void set_player_in_turn(const QString& player) const;
     void append_to_text_browser(const QString& text) const;
+    void disable_all_cards() const;
+    void restore_all_cards() const;
 
 private slots:
     void timer_callback();

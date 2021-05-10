@@ -13,9 +13,8 @@ MainWindow::MainWindow(QWidget* parent)
 
     //two players hardcoded, but everything is designed so that any amount
     //of players would work. player selection can easily be added later
-    const std::vector<Player*> players = { new Player(PLAYER1_NAME), 
-                                           new Player(PLAYER2_NAME) };
-    game_logic_ = new GameLogic(players, this);
+    game_logic_ = new GameLogic({ new Player(PLAYER1_NAME),
+                                  new Player(PLAYER2_NAME) }, this);
 
     //if an invalid card count was specified, no need to continue further
     if (!successful_init_)
@@ -67,7 +66,7 @@ void MainWindow::init_cardbuttons(const unsigned card_rows,
             const auto button = new CardButton(icons.at(i++), grid_layout_widget_);
             cardbuttons_.push_back(button);
             connect(button, &CardButton::cardbutton_clicked, game_logic_,
-                    &GameLogic::handle_click);
+                    &GameLogic::handle_cardbutton_click);
             grid_layout_->addWidget(button, row, col);
         }
     }
@@ -126,6 +125,41 @@ void MainWindow::set_player_in_turn(const QString& player) const
 void MainWindow::append_to_text_browser(const QString& text) const
 {
     text_browser_->append(text);
+}
+
+void MainWindow::disable_all_cards() const
+{
+    for(const auto& card : cardbuttons_)
+    {
+        //don't set disabled state for turned or already removed cards
+        if(!card->get_turned_state() && card->isVisible())
+        {
+            card->set_disabled();
+        }
+    }
+}
+
+void MainWindow::restore_all_cards() const
+{
+    for (const auto& card : cardbuttons_)
+    {
+        //don't restore already removed cards
+        if(!card->isVisible())
+        {
+            continue;
+        }
+
+        //if the card is turned, turn it back
+        //otherwise just enable it
+        if(card->get_turned_state())
+        {
+            card->turn();
+        }
+        else
+        {
+            card->set_enabled();
+        }
+    }
 }
 
 MainWindow::~MainWindow()

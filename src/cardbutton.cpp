@@ -4,7 +4,8 @@ CardButton::CardButton(const int icon, QWidget* parent)
     : QPushButton(parent), icon_(icon)
 {
     connect(this, &QPushButton::clicked, this, &CardButton::handle_click);
-    this->setStyleSheet(STYLE_SHEET_DEFAULT);
+    this->setProperty("state", DEFAULT_STATE);
+    this->setStyleSheet(STYLE_SHEET);
     this->setIcon(get_icon(utils::back));
     this->setIconSize(QSize(ICON_WIDTH, ICON_HEIGHT));
     this->setCursor(Qt::PointingHandCursor);
@@ -12,28 +13,61 @@ CardButton::CardButton(const int icon, QWidget* parent)
     auto size_policy = this->sizePolicy();
     size_policy.setRetainSizeWhenHidden(true);
     this->setSizePolicy(size_policy);
+    
 }
 
 void CardButton::turn()
 {
     if(turned_)
     {
-        this->setCursor(Qt::PointingHandCursor);
         this->setIcon(get_icon(utils::back));
-        this->setStyleSheet(STYLE_SHEET_DEFAULT);
-        this->blockSignals(false);
+        set_enabled();
     }
     else
     {
         this->setIcon(utils::get_icon(icon_));
-        this->setCursor(Qt::ForbiddenCursor);
-        this->setStyleSheet(STYLE_SHEET_TURNED);
-        this->blockSignals(true);
+        this->set_style_state(TURNED_STATE);
+        set_disabled(false);
     }
     turned_ = !turned_;
+}
+
+void CardButton::set_disabled(const bool change_style_state)
+{
+    if(change_style_state)
+    {
+        this->set_style_state(DISABLED_STATE);
+    }
+    this->setCursor(Qt::ForbiddenCursor);
+    this->blockSignals(true);
+}
+
+void CardButton::set_enabled()
+{
+    this->set_style_state(DEFAULT_STATE);
+    this->setCursor(Qt::PointingHandCursor);
+    this->blockSignals(false);
+}
+
+void CardButton::set_turned_no_pair()
+{
+    set_style_state(TURNED_NO_PAIR_STATE);
+}
+
+bool CardButton::get_turned_state() const
+{
+    return turned_;
 }
 
 void CardButton::handle_click()
 {
     emit cardbutton_clicked(icon_);
+}
+
+void CardButton::set_style_state(const QVariant& state)
+{
+    //style has to unpolished and polished for a property change to effect
+    this->setProperty("state", state);
+    this->style()->unpolish(this);
+    this->style()->polish(this);
 }
