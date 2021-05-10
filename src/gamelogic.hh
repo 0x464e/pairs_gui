@@ -45,7 +45,7 @@ public slots:
 
 private:
     //how long card pair is visible for after being turned (in ms)
-    const unsigned PAIR_VIEW_TIME = 1000;
+    const unsigned PAIR_VIEW_TIME = 3000;
 
     //players in the game
     std::vector<Player*> players_;
