@@ -5,6 +5,8 @@ The final C++ project for my university's C++ programming course.
 A simple command line version of this game was created as the very first project of C++ course.  
 The command line version can be found [here](https://github.com/0x464e/pairs).
 
+Some commits and other information about the repository's history may appear odd, this is because the commits were originally made to my university's private GitLab from my university account & email. Private/sensitive information had to removed from the commits.
+
 ---
 
 This program creates a memory game, where a desired amount of players compete against each other in a classic card flipping memory game. The cards have images of animals, find a pair to score a point.
