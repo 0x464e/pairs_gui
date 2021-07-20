@@ -2,7 +2,8 @@
 
 The final C++ project for my university's C++ programming course.
 
-This simple command line version of this game was created as the very first project of C++ course. The command line version can be found [here](https://github.com/0x464e/pairs).
+A simple command line version of this game was created as the very first project of C++ course.  
+The command line version can be found [here](https://github.com/0x464e/pairs).
 
 ---
 
